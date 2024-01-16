@@ -4,7 +4,7 @@ import pathlib
 import os
 from datetime import datetime
 
-from src import converter
+from src import converter, gui
 
 # TODO: Check image type
 
@@ -13,6 +13,7 @@ class GraphReader:
         self.parser = self.create_parser()
         self.converter = None
         self.args = None
+        self.gui = None
 
     def create_parser(self):
         parser = argparse.ArgumentParser(description='Deep Learning Graph Reader')
@@ -29,13 +30,13 @@ class GraphReader:
             self.converter = converter.GraphConverter(self.args.model_dir)
             self.run_command_line()
         else:
-            raise NotImplementedError("GUI not implemented yet - please use command line interface (--cmd)")
-            # self.run_gui()
+            # raise NotImplementedError("GUI not implemented yet - please use command line interface (--cmd)")
+            self.run_gui()
 
     def run_gui(self):
         # GUI implementation goes here
-        root = tk.Tk()
-        root.mainloop()
+        self.gui = gui.GUI()
+        self.gui.run()
 
     def run_command_line(self):
         # Command line implementation goes here
