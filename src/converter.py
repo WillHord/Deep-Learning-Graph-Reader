@@ -27,6 +27,9 @@ class GraphConverter:
         self.DePlot_Model = None
         self.DePlot_Processor = None
         self.load_models(str(model_path))
+        
+    def check_filetype(self, image_path):
+        return image_path.split(".")[-1] in ["png", "jpg", "jpeg"]
 
     def load_models(self, model_path):
         # Load Resnet50 pretrained model

@@ -7,6 +7,8 @@ import time
 from functools import wraps
 
 # Decorator to add loading bar to GUI
+
+
 def loading_bar(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -15,23 +17,28 @@ def loading_bar(func):
         self.progress.start(10)
         func(*args, **kwargs)
         self.progress.stop()
-        self.progress.pack_forget() 
+        self.progress.pack_forget()
     return wrapper
+
+# Decorator to start function in new thread
+
 
 def start_in_thread(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        threading.Thread(target=func, args=args, kwargs=kwargs, daemon=True).start()
+        threading.Thread(target=func, args=args,
+                         kwargs=kwargs, daemon=True).start()
     return wrapper
 
+
 class GUI:
-    def __init__(self, converter = None):
+    def __init__(self, converter=None):
         self.window = tk.Tk()
         self.window.title("Deep Learning Graph Reader")
-        
+
         self.converter = converter
         self.build()
-        
+
     def build(self):
         # Create left section for file input
         self.file_input_frame = tk.Frame(self.window)
@@ -46,15 +53,17 @@ class GUI:
         button_frame = tk.Frame(self.file_input_frame)
         button_frame.pack()
 
-        self.browse_file_button = tk.Button(button_frame, text="Browse", command=lambda: self.browse_file(self.file_entry))
+        self.browse_file_button = tk.Button(
+            button_frame, text="Browse", command=lambda: self.browse_file(self.file_entry))
         self.browse_file_button.pack(side=tk.LEFT)
-        
-        self.upload_button = tk.Button(button_frame, text="Upload", command=self.upload_file)
+
+        self.upload_button = tk.Button(
+            button_frame, text="Upload", command=self.upload_file)
         self.upload_button.pack(side=tk.LEFT)
-        
+
         # Progress bar
-        self.progress = ttk.Progressbar(self.file_input_frame, orient=tk.HORIZONTAL, length=100, mode='indeterminate')
-        # self.progress.pack()
+        self.progress = ttk.Progressbar(
+            self.file_input_frame, orient=tk.HORIZONTAL, length=100, mode='indeterminate')
 
         # Create right section for output and image display
         self.output_frame = tk.Frame(self.window)
@@ -70,9 +79,11 @@ class GUI:
         self.output_label = tk.Label(self.output_frame, text="Output Table:")
         self.output_label.pack()
 
+        # make user unable to edit output table
         self.output_table = tk.Text(self.output_frame)
+        self.output_table.configure(state='disabled')
         self.output_table.pack()
-    
+
     @start_in_thread
     @loading_bar
     def browse_file(self, path_entry):
@@ -80,22 +91,48 @@ class GUI:
         if filepath:
             path_entry.delete(0, tk.END)
             path_entry.insert(0, filepath)
-            
+
     @start_in_thread
     @loading_bar
     def upload_file(self):
         filepath = self.file_entry.get()
         if filepath:
             img = Image.open(filepath)
-            img.thumbnail((200, 200)) 
+            img.thumbnail((200, 200))
             img = ImageTk.PhotoImage(img)
             self.image_label.configure(image=img)
-            self.image_label.image = img 
-        
+            self.image_label.image = img
+            
+            if self.converter:
+                valid_image = self.converter.check_filetype(filepath)
+                if valid_image:
+                    chart_type, data = self.converter.convert_image_to_data(filepath)
+                    self.output_table.configure(state='normal')
+                    self.output_table.delete(1.0, tk.END)
+                    self.output_table.insert(1.0, data.to_string(index=False))
+                    self.output_table.insert(1.0, "Chart Type: " + chart_type + "\n")
+                    self.output_table.configure(state='disabled')
+                else:
+                    self.output_table.configure(state='normal')
+                    self.output_table.delete(1.0, tk.END)
+                    self.output_table.insert(1.0, "ERROR: Invalid image file")
+                    self.output_table.configure(state='disabled')
+            else:
+                self.output_table.configure(state='normal')
+                self.output_table.delete(1.0, tk.END)
+                self.output_table.insert(1.0, "ERROR: Converter not set")
+                self.output_table.configure(state='disabled')
+        else:
+            # Display error message
+            self.output_table.configure(state='normal')
+            self.output_table.delete(1.0, tk.END)
+            self.output_table.insert(1.0, "ERROR: No file selected")
+            self.output_table.configure(state='disabled')
+            pass
 
     def run(self):
-        # Start the main event loop
         self.window.mainloop()
+
 
 if __name__ == '__main__':
     gui = GUI()

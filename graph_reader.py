@@ -31,11 +31,13 @@ class GraphReader:
             self.run_command_line()
         else:
             # raise NotImplementedError("GUI not implemented yet - please use command line interface (--cmd)")
+            print("Setting up converter please hold...")
+            self.converter = converter.GraphConverter(self.args.model_dir)
             self.run_gui()
 
     def run_gui(self):
         # GUI implementation goes here
-        self.gui = gui.GUI()
+        self.gui = gui.GUI(self.converter)
         self.gui.run()
 
     def run_command_line(self):
