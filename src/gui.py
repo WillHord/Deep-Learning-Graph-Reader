@@ -6,10 +6,9 @@ import time
 
 from functools import wraps
 
-# Decorator to add loading bar to GUI
-
 
 def loading_bar(func):
+    """Decorator to add loading bar to GUI"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         self = args[0]
@@ -20,10 +19,9 @@ def loading_bar(func):
         self.progress.pack_forget()
     return wrapper
 
-# Decorator to start function in new thread
-
 
 def start_in_thread(func):
+    """Decorator to start function in new thread"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         threading.Thread(target=func, args=args,
@@ -32,6 +30,10 @@ def start_in_thread(func):
 
 
 class GUI:
+    """
+    GUI for Deep Learning Graph Reader
+    """
+
     def __init__(self, converter=None):
         self.window = tk.Tk()
         self.window.title("Deep Learning Graph Reader")
@@ -102,15 +104,17 @@ class GUI:
             img = ImageTk.PhotoImage(img)
             self.image_label.configure(image=img)
             self.image_label.image = img
-            
+
             if self.converter:
                 valid_image = self.converter.check_filetype(filepath)
                 if valid_image:
-                    chart_type, data = self.converter.convert_image_to_data(filepath)
+                    chart_type, data = self.converter.convert_image_to_data(
+                        filepath)
                     self.output_table.configure(state='normal')
                     self.output_table.delete(1.0, tk.END)
                     self.output_table.insert(1.0, data.to_string(index=False))
-                    self.output_table.insert(1.0, "Chart Type: " + chart_type + "\n")
+                    self.output_table.insert(
+                        1.0, "Chart Type: " + chart_type + "\n")
                     self.output_table.configure(state='disabled')
                 else:
                     self.output_table.configure(state='normal')
