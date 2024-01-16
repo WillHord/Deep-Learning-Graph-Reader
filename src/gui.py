@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 from PIL import Image, ImageTk
 import threading
-import time
 
 from functools import wraps
 
@@ -78,10 +77,9 @@ class GUI:
         self.image_label = tk.Label(self.image_frame)
         self.image_label.pack()
 
-        self.output_label = tk.Label(self.output_frame, text="Output Table:")
+        self.output_label = tk.Label(self.output_frame, text="Output:")
         self.output_label.pack()
 
-        # make user unable to edit output table
         self.output_table = tk.Text(self.output_frame)
         self.output_table.configure(state='disabled')
         self.output_table.pack()

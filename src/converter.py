@@ -4,7 +4,7 @@ import pandas as pd
 
 import torch
 import torchvision.transforms as transforms
-from transformers import AutoProcessor, Pix2StructConfig, Pix2StructForConditionalGeneration
+from transformers import AutoProcessor, Pix2StructForConditionalGeneration
 
 
 class GraphConverter:
@@ -27,7 +27,7 @@ class GraphConverter:
         self.DePlot_Model = None
         self.DePlot_Processor = None
         self.load_models(str(model_path))
-        
+
     def check_filetype(self, image_path):
         return image_path.split(".")[-1] in ["png", "jpg", "jpeg"]
 
@@ -83,7 +83,7 @@ class GraphConverter:
         image = Image.open(image_path).convert('RGB')
         predicted_type = self.predict_graph_type(image)
         predicted_type_str = self.chart_type_list[predicted_type]
-        
+
         print("Converting image to data...")
         inputs = self.DePlot_Processor(
             images=image, text=f"Generate underlying data table of the {predicted_type_str.replace('_', ' ')} graph below:", return_tensors="pt").to(self.device)
