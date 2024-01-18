@@ -46,7 +46,7 @@ python graph_reader.py --help
 ## Authors
 
 Program made by
-- [https://github.com/WillHord](Will Hord)
+- [Will Hord](https://github.com/WillHord)
 
 Model training/fine-tuning and pipeline design made in collaboration with:
 - Sion Daniel
