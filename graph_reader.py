@@ -31,11 +31,13 @@ class GraphReader:
         self.args = self.parser.parse_args()
 
         if self.args.cmd:
-            self.converter = converter.GraphConverter(self.args.model_dir)
+            self.converter = converter.GraphConverter(str(self.args.model_dir))
+            self.converter.load_models()
             self.run_command_line()
         else:
             print("Setting up converter please hold...")
-            self.converter = converter.GraphConverter(self.args.model_dir)
+            self.converter = converter.GraphConverter(str(self.args.model_dir))
+            self.converter.load_models()
             self.run_gui()
 
     def run_gui(self):

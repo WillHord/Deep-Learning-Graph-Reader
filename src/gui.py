@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 from PIL import Image, ImageTk
 import threading
+import warnings
 
 from functools import wraps
 
@@ -137,5 +138,6 @@ class GUI:
 
 
 if __name__ == '__main__':
+    warnings.warn("This is a module and should not be run directly\nConverter will not be loaded")
     gui = GUI()
     gui.run()

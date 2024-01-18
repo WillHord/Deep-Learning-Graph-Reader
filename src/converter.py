@@ -26,12 +26,13 @@ class GraphConverter:
         self.CNN = None
         self.DePlot_Model = None
         self.DePlot_Processor = None
-        self.load_models(str(model_path))
+        self.model_path = model_path
 
     def check_filetype(self, image_path):
         return image_path.split(".")[-1] in ["png", "jpg", "jpeg"]
 
-    def load_models(self, model_path):
+    def load_models(self):
+        model_path = self.model_path
         # Load Resnet50 pretrained model
         if os.path.exists(model_path + '/resnet50'):
             print("Loading Resnet50 model...")
@@ -129,23 +130,8 @@ class GraphConverter:
         if table.empty:
             table = pd.concat(
                 [table, pd.DataFrame({axes[0]: [0], axes[1]: [0]})])
-
-        # Save the dataframe as a csv file in the ../output folder
-        # TODO: Auto make output folder, allow for custom output folder
-        # table.to_csv(f"./output/{chart_type}.csv", index=False)
         return table, chart_type
 
 
 if __name__ == '__main__':
-    chart_type_list = ['dot', 'horizontal_bar',
-                       'vertical_bar', 'line', 'scatter']
-    converter = GraphConverter('../models/')
-    # converter.convert_image_to_data('../tests/imgs/test1.jpg')
-
-    data = "TITLE |  <0x0A> Time (h) | In[H:O2] <0x0A> 0 | 0 <0x0A> 6 | 1.32 <0x0A> 12 | 2.61 <0x0A> 18 | 1.93 <0x0A> 24 | 3.23"
-    chart_type = 3
-
-    ddata = converter.process_prediction(data, chart_type)
-    print(ddata)
-    # predicted_type = converter.predict_graph_type('../tests/imgs/test1.jpg')
-    # print(f"Predicted type: {chart_type_list[predicted_type]}")
+    raise Exception("This file is not meant to be run directly")
